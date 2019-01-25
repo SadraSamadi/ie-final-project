@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="mb-5">
+        <h2 class="text-center mt-5 mb-3" th:text="${edit} ? 'ویرایش رویداد' : 'ایجاد رویداد'"></h2>
+        <div class="container">
+            <div class="card">
+                <form th:action="@{/events/__${edit == true ? event.id : ''}__}"
+                      th:object="${event}"
+                      th:method="${edit} ? 'put' : 'post'"
+                      enctype="multipart/form-data">
+                    <div class="msg bg-danger text-light" th:each="err: ${#fields.allErrors()}" th:text="${err}"></div>
+                    <label>
+                        عنوان
+                        <input class="form-control" type="text" th:field="*{title}">
+                    </label>
+                    <label>
+                        زمان شروع
+                        <input class="form-control" type="datetime-local" th:field="*{start}">
+                    </label>
+                    <label>
+                        زمان پایان
+                        <input class="form-control" type="datetime-local" th:field="*{finish}">
+                    </label>
+                    <label>
+                        مکان
+                        <textarea class="form-control" rows="3" th:field="*{location}"></textarea>
+                    </label>
+                    <label>
+                        توضیحات
+                        <textarea class="form-control" rows="10" th:field="*{description}"></textarea>
+                    </label>
+                    <label>
+                        تصویر
+                        <input class="form-control" type="file" name="file" accept="image/*">
+                    </label>
+                    <input class="w-100 btn bg-primary text-white" type="submit" value="ثبت">
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+* {
+    font-family: 'Shabnam', sans-serif;
+}
+
+html {
+    direction: rtl;
+    scroll-behavior: smooth;
+}
+
+a {
+    color: inherit;
+}
+
+.welcome {
+    padding: 10rem 0;
+}
+
+.event-detail-img {
+    width: 100%;
+    height: 300px;
+}
+
+.event-thumbnail {
+    width: 200px;
+    height: 200px;
+    margin: 10px auto;
+}
+
+.avatar-thumbnail {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.msg-sender-thumbnail {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.participator-thumbnail {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.event-link {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.table {
+    width: 100%;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table td {
+    text-align: center;
+}
+
+.table td {
+    padding: 5px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}

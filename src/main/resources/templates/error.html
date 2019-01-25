@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="my-5">
+        <div class="container text-center">
+            <div class="card">
+                <div th:if="${param.forbidden}">
+                    <h1 class="display-1">403</h1>
+                    <h2>خطا، صفحه مورد نظر برای شما قابل دسترس نیست!</h2>
+                </div>
+                <div th:unless="${param.forbidden}">
+                    <h1 class="display-1">404</h1>
+                    <h2>خطا، صفحه مورد نظر یافت نشد!</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+</body>
+</html>

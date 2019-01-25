@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="mb-5">
+        <div class="container">
+            <h2 class="text-center mt-5 mb-3">ایجاد حساب کاربری</h2>
+            <div class="card">
+                <form th:action="@{/users/register}" th:object="${user}" method="post">
+                    <div class="msg bg-danger text-light" th:each="err: ${#fields.allErrors()}" th:text="${err}"></div>
+                    <label>
+                        نام و نام خانوادگی
+                        <input class="form-control" type="text" th:field="*{name}">
+                    </label>
+                    <label>
+                        شماره تلفن
+                        <input class="form-control" type="tel" th:field="*{phone}">
+                    </label>
+                    <label>
+                        ایمیل
+                        <input class="form-control" type="email" th:field="*{email}">
+                    </label>
+                    <label>
+                        کلمه عبور
+                        <input class="form-control" type="password" th:field="*{password}">
+                    </label>
+                    <label>
+                        تکرار کلمه عبور
+                        <input class="form-control" type="password" th:field="*{matchPassword}">
+                    </label>
+                    <input class="w-100 btn bg-primary text-white" type="submit" value="عضویت">
+                </form>
+                <div class="m-2 text-center">
+                    <a th:href="@{/users/login}">قبلا حساب ایجاد کرده اید؟ وارد شوید...</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+</body>
+</html>

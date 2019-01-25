@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section id="main" class="bg-light">
+        <div class="container text-center">
+            <div class="welcome">
+                <h2>به سامانه مدیریت همایش و کنفرانس خوش آمدید</h2>
+                <p class="mt-4">از طریق این سامانه میتوانید به سادگی رویداد خود را ایجاد کرده و اطلاعات مختلفی مثل زمان
+                    برگزاری، مکان رویداد و سایر مشخصات را در معرض دید مخاطبین قرار دهید.</p>
+            </div>
+        </div>
+    </section>
+    <section id="events" class="py-5">
+        <div class="container">
+            <h2 class="text-center">رویدادها</h2>
+            <div class="row">
+                <div th:each="event : ${events}" class="col-12 col-lg-6">
+                    <article class="card">
+                        <div class="event-detail-img fit-bg-img"
+                             th:style="'background-image: url(' + ${event.poster} + ')'"></div>
+                        <h4 class="mt-2 text-center" th:text="${event.title}"></h4>
+                        <p th:text="${event.description}"></p>
+                        <a th:href="@{/events/detail/__${event.id}__}" class="w-100 btn bg-primary text-white">
+                            مشاهده
+                        </a>
+                    </article>
+                </div>
+            </div>
+            <p th:if="${events.isEmpty()}" class="text-center text-gray">رویدادی موجود نیست!</p>
+            <div th:unless="${events.isEmpty()}" class="row justify-content-center">
+                <a th:each="i : ${#numbers.sequence(0, events.totalPages - 1)}"
+                   th:href="@{/(page=__${i}__)}"
+                   th:text="${i + 1}"
+                   th:classappend="${(param.page == null && i == 0) || #strings.equals(param.page, i.toString())} ?
+                   'bg-dark' : 'bg-gray'"
+                   class="col-auto m-2 btn text-light">
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+</body>
+</html>

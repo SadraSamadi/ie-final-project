@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      prefix="og: http://ogp.me/ns# profile: http://ogp.me/ns/profile#">
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <meta property="og:title" th:content="${user.name}">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="/users/profile">
+    <meta property="og:image" th:content="${user.avatar}">
+    <meta property="profile:first_name" th:content="${user.name}">
+    <meta property="profile:last_name" th:content="${user.name}">
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="mt-5">
+        <div class="container">
+            <div class="msg bg-success text-white" th:if="${profileUpdated}" th:text="${profileUpdated}"></div>
+            <h2 class="text-center mb-3">پروفایل</h2>
+            <div class="card">
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-4">
+                        <div th:style="'background-image: url(' + ${user.avatar} + ')'"
+                             class="event-thumbnail fit-bg-img rounded-circle">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <p>
+                            <strong>نام و نام خانوادگی:</strong>
+                            <span th:text="${user.name}"></span>
+                        </p>
+                        <p>
+                            <strong>ایمیل:</strong>
+                            <span th:text="${user.email}"></span>
+                        </p>
+                        <p>
+                            <strong>شماره تلفن:</strong>
+                            <span th:text="${user.phone}"></span>
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <a th:href="@{/users/edit}" class="w-100 mb-2 btn bg-primary text-white">ویرایش حساب کاربری</a>
+                        <a th:href="@{/users/logout}"
+                           onclick="return confirm('آیا اطمینان دارید؟')"
+                           class="w-100 btn bg-danger text-white">
+                            خروج از حساب کاربری
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="my-5">
+        <div class="container">
+            <h2 class="text-center mb-3">درخواست های شرکت در رویداد</h2>
+            <div class="card">
+                <p th:if="${participations.isEmpty()}" class="text-center text-gray">درخواستی موجود نیست!</p>
+                <th:block th:each="participation : ${participations}">
+                    <th:block th:switch="${participation.status.name()}">
+                        <div th:case="'PENDING'" class="msg bg-warning text-white">
+                            درخواست شرکت در رویداد
+                            <a class="event-link"
+                               th:href="@{/events/detail/__${participation.event.id}__}"
+                               th:text="${participation.event.title}">
+                            </a>
+                            درحال بررسی است.
+                        </div>
+                        <div th:case="'ACCEPTED'" class="msg bg-success text-white">
+                            درخواست شرکت در رویداد
+                            <a class="event-link"
+                               th:href="@{/events/detail/__${participation.event.id}__}"
+                               th:text="${participation.event.title}">
+                            </a>
+                            پذیرفته شد.
+                        </div>
+                        <div th:case="'DENIED'" class="msg bg-danger text-white">
+                            درخواست شرکت در رویداد
+                            <a class="event-link"
+                               th:href="@{/events/detail/__${participation.event.id}__}"
+                               th:text="${participation.event.title}">
+                            </a>
+                            رد شد.
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
+    </section>
+    <section sec:authorize="hasAuthority('ADMIN')" class="my-5">
+        <div class="container">
+            <h2 class="text-center mb-3">پیام های دریافت شده</h2>
+            <div th:if="${messages.isEmpty()}" class="card">
+                <p class="text-center text-gray">پیامی موجود نیست!</p>
+            </div>
+            <div class="row">
+                <div th:each="msg : ${messages}" class="col-12">
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-12 col-md-3">
+                                <div th:style="'background-image: url(' + ${msg.sender.avatar} + ')'"
+                                     class="msg-sender-thumbnail fit-bg-img rounded-circle">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <h3 th:text="${msg.sender.name}"></h3>
+                                <h6 th:text="${#dates.format(msg.date, 'YYYY-MM-DD, HH:mm')}" class="text-gray"></h6>
+                                <p th:text="${msg.text}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+</body>
+</html>

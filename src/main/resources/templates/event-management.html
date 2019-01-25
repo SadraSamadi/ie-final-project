@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="my-5">
+        <div class="container">
+            <div class="msg bg-success text-white" th:if="${eventCreated}" th:text="${eventCreated}"></div>
+            <div class="msg bg-success text-white" th:if="${eventUpdated}" th:text="${eventUpdated}"></div>
+            <h2 class="text-center mb-3">مدیریت رویدادها</h2>
+            <div class="card">
+                <a th:href="@{/events/add}" class="w-100 btn m-2 bg-success text-white">ایجاد رویداد</a>
+                <table class="table">
+                    <tr class="border-bottom">
+                        <th>شماره</th>
+                        <th>عنوان</th>
+                        <th>تاریخ ایجاد</th>
+                        <th>عملیات</th>
+                    </tr>
+                    <tr th:each="event: ${events}" th:id="${'row-' + event.id}">
+                        <td th:text="${event.id}"></td>
+                        <td th:text="${event.title}"></td>
+                        <td th:text="${#dates.format(event.created, 'YYYY-MM-DD, HH:mm')}"></td>
+                        <td>
+                            <a style="width: 110px"
+                               th:href="@{/events/edit/__${event.id}__}"
+                               class="my-1 btn bg-primary text-white">
+                                ویرایش
+                            </a>
+                            <a style="width: 110px"
+                               th:href="@{/events/participations/__${event.id}__}"
+                               class="my-1 btn bg-secondary text-white">
+                                درخواست ها
+                            </a>
+                            <button style="width: 110px"
+                                    th:onclick="'deleteEvent(' + ${event.id} + ')'"
+                                    class="my-1 btn bg-danger text-white">
+                                حذف
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <p th:if="${events.isEmpty()}" class="text-center text-gray">رویدادی موجود نیست!</p>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+<script>
+    function deleteEvent(id) {
+        if (!confirm('آیا اطمینان دارید؟'))
+            return;
+        var tr = document.getElementById('row-' + id);
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', '/events/' + id);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4)
+                return;
+            switch (xhr.status) {
+                case 404:
+                case 500:
+                    alert('متاسفانه خطایی رخ داد');
+                    break;
+                case 200:
+                    alert('رویداد با موفقیت حذف شد');
+                    tr.parentNode.removeChild(tr);
+                    break;
+            }
+        };
+        xhr.send();
+    }
+</script>
+</body>
+</html>

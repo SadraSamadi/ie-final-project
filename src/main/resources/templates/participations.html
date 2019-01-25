@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="my-5">
+        <div class="container">
+            <h2 class="text-center mb-3">
+                مدیریت درخواست های شرکت در رویداد
+                <a class="event-link" th:href="@{/events/detail/__${event.id}__}" th:text="${event.title}"></a>
+            </h2>
+            <div class="card">
+                <table class="table">
+                    <tr>
+                        <th>تصویر درخواست کننده</th>
+                        <th>نام درخواست کننده</th>
+                        <th>پاسخ به درخواست</th>
+                    </tr>
+                    <tr th:each="participation : ${participations}">
+                        <td>
+                            <div th:style="'background-image: url(' + ${participation.user.avatar} + ')'"
+                                 class="participator-thumbnail fit-bg-img rounded-circle">
+                            </div>
+                        </td>
+                        <td th:text="${participation.user.name}"></td>
+                        <td>
+                            <button th:id="'accept-' + ${participation.id}" style="width: 80px"
+                                    th:onclick="'changeStatus(' + ${participation.id} + ', true)'"
+                                    th:disabled="${participation.status.name() == 'ACCEPTED'}"
+                                    class="my-1 btn bg-success text-white">
+                                پذیرش
+                            </button>
+                            <button th:id="'deny-' + ${participation.id}" style="width: 80px"
+                                    th:onclick="'changeStatus(' + ${participation.id} + ', false)'"
+                                    th:disabled="${participation.status.name() == 'DENIED'}"
+                                    class="my-1 btn bg-danger text-white">
+                                رد
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <p th:if="${participations.isEmpty()}" class="text-center text-gray">درخواستی موجود نیست!</p>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+<script>
+    function changeStatus(id, status) {
+        var accept = document.getElementById('accept-' + id);
+        var deny = document.getElementById('deny-' + id);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/events/participation-status/' + id + '?status=' + (status ? 'ACCEPTED' : 'DENIED'));
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4)
+                return;
+            switch (xhr.status) {
+                case 404:
+                case 500:
+                    alert('متاسفانه خطایی رخ داد');
+                    break;
+                case 200:
+                    alert('با موفقیت انجام شد');
+                    accept.disabled = status;
+                    deny.disabled = !status;
+                    break;
+            }
+        };
+        xhr.send();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+<head>
+    <title>سامانه مدیریت همایش و کنفرانس</title>
+    <meta property="og:title" th:content="${event.title}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" th:content="${'/events/detail/' + event.id}">
+    <meta property="og:image" th:content="${event.poster}">
+    <!--/*/ <th:block th:include="fragment/general :: frg-head"></th:block> /*/-->
+</head>
+<body>
+<div th:replace="fragment/general :: frg-header"></div>
+<main>
+    <section class="my-5">
+        <div class="container">
+            <div class="card">
+                <div class="event-detail-img fit-bg-img"
+                     th:style="'background-image: url(' + ${event.poster} + ')'"></div>
+                <h4 class="mt-2 text-center" th:text="${event.title}"></h4>
+                <p>
+                    <strong>زمان شروع:</strong>
+                    <span th:text="${#temporals.format(event.start, 'yyyy-MM-dd, HH:mm')}"></span>
+                </p>
+                <p>
+                    <strong>زمان پایان:</strong>
+                    <span th:text="${#temporals.format(event.finish, 'yyyy-MM-dd, HH:mm')}"></span>
+                </p>
+                <p>
+                    <strong>مکان:</strong>
+                    <span th:text="${event.location}"></span>
+                </p>
+                <p th:text="${event.description}"></p>
+                <a sec:authorize="isAnonymous()"
+                   th:href="@{/users/login}"
+                   class="w-100 btn bg-primary text-white">
+                    درخواست شرکت در همایش
+                </a>
+                <button id="participate"
+                        sec:authorize="isAuthenticated()"
+                        th:disabled="${participation != null}"
+                        class="w-100 btn bg-primary text-white"
+                        th:onclick="'participate(' + ${event.id} + ')'">
+                    درخواست شرکت در همایش
+                </button>
+                <div class="row">
+                    <div class="col-12 col-lg-4">
+                        <div class="card text-center">
+                            <span>برگزار کننده</span>
+                            <div th:style="'background-image: url(' + ${event.user.avatar} + ')'"
+                                 class="event-thumbnail fit-bg-img rounded-circle"></div>
+                            <span th:text="${event.user.name}"></span>
+                            <br/>
+                            <a class="text-blue"
+                               th:href="'tel:' + ${event.user.phone}"
+                               th:text="${event.user.phone}">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-8">
+                        <div class="card">
+                            <h3 class="text-center my-3">ارسال پیام به برگزار کننده</h3>
+                            <label for="msg">متن پیام</label>
+                            <textarea id="msg" class="form-control" rows="10" name="msg"></textarea>
+                            <a sec:authorize="isAnonymous()"
+                               class="w-100 btn bg-dark text-white"
+                               th:href="@{/users/login}">
+                                ارسال
+                            </a>
+                            <button sec:authorize="isAuthenticated()"
+                                    class="w-100 btn bg-dark text-white"
+                                    th:onclick="'sendMsg('+${event.user.id}+')'">
+                                ارسال
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="fragment/general :: frg-footer"></div>
+<script>
+    function participate(event) {
+        var btn = document.getElementById('participate');
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/events/participate/' + event);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4)
+                return;
+            switch (xhr.status) {
+                case 404:
+                case 500:
+                    alert('متاسفانه خطایی رخ داد');
+                    break;
+                case 200:
+                    alert('درخواست با موفقیت ارسال شد');
+                    btn.disabled = true;
+                    break;
+            }
+        };
+        xhr.send();
+    }
+
+    function sendMsg(user) {
+        var element = document.getElementById('msg');
+        var data = {
+            user: user,
+            text: element.value
+        };
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/users/msg');
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4)
+                return;
+            switch (xhr.status) {
+                case 400:
+                    alert('لطفا متن پیام را وارد کنید');
+                    break;
+                case 404:
+                case 500:
+                    alert('متاسفانه خطایی در ارسال رخ داد');
+                    break;
+                case 200:
+                    alert('پیام با موفقیت ارسال شد');
+                    element.value = '';
+                    break;
+            }
+        };
+        var json = JSON.stringify(data);
+        xhr.send(json);
+    }
+</script>
+</body>
+</html>
