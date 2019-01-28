@@ -25,7 +25,7 @@
                         <div class="event-detail-img fit-bg-img"
                              th:style="'background-image: url(' + ${event.poster} + ')'"></div>
                         <h4 class="mt-2 text-center" th:text="${event.title}"></h4>
-                        <p th:text="${event.description}"></p>
+                        <p class="event-description" th:text="${#strings.abbreviate(event.description, 500)}"></p>
                         <a th:href="@{/events/detail/__${event.id}__}" class="w-100 btn bg-primary text-white">
                             مشاهده
                         </a>

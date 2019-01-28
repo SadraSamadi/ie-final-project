@@ -9,3 +9,6 @@
 * Run `cd target`
 * Run `java -jar .\ie-final-project-0.0.1-SNAPSHOT.jar`
 * Open [http://localhost:8080/](http://localhost:8080/)
+* Login as admin:
+    * Email: `admin@gmail.com`
+    * Password: `123456`
