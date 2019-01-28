@@ -19,6 +19,8 @@ import java.util.UUID;
 @Service
 public class StorageService {
 
+    private static final String PREFIX = "/resource/";
+
     @Value("${storage.root}")
     public String root;
 
@@ -31,7 +33,7 @@ public class StorageService {
             File dest = new File(root, name);
             InputStream inputStream = file.getInputStream();
             FileUtils.copyInputStreamToFile(inputStream, dest);
-            return "/resource/" + name;
+            return PREFIX + name;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -48,8 +50,8 @@ public class StorageService {
     }
 
     public void delete(String name) {
-        if (name.startsWith("/resource/")) {
-            name = name.replace("/resource/", "");
+        if (name.startsWith(PREFIX)) {
+            name = name.replace(PREFIX, "");
             File file = new File(root, name);
             FileUtils.deleteQuietly(file);
         }
